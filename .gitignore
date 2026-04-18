@@ -1,0 +1,44 @@
+# Dependencies
+butterfly-nextjs/node_modules/
+
+# Next.js build outputs
+butterfly-nextjs/.next/
+butterfly-nextjs/out/
+
+# Production build
+butterfly-nextjs/build/
+butterfly-nextjs/dist/
+
+# Testing
+butterfly-nextjs/coverage/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug logs
+butterfly-nextjs/npm-debug.log*
+butterfly-nextjs/yarn-debug.log*
+butterfly-nextjs/yarn-error.log*
+
+# Local env files
+butterfly-nextjs/.env
+butterfly-nextjs/.env.local
+butterfly-nextjs/.env.development.local
+butterfly-nextjs/.env.test.local
+butterfly-nextjs/.env.production.local
+
+# Vercel
+butterfly-nextjs/.vercel
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Trae
+.trae/
+
+# Themes (external dependency)
+themes/
