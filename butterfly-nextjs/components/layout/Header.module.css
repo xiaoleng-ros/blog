@@ -1,0 +1,323 @@
+/* ============================================
+ * Header 导航栏组件样式
+ * 基于 Butterfly 主题设计规范
+ * 支持：固定定位、响应式布局、暗色模式
+ * ============================================ */
+
+/* Header 容器 - 固定定位 */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 固定定位时的透明毛玻璃效果 */
+.nav.scrolled {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 暗色模式下的透明效果 */
+[data-theme="dark"] .nav {
+  border-bottom-color: #30363d;
+}
+
+[data-theme="dark"] .nav.scrolled {
+  background: rgba(22, 27, 34, 0.92);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Header 内部容器 - 响应式居中布局 */
+.navContent {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+/* ============================================
+ * 左侧：网站标题/Logo 区域
+ * ============================================ */
+.blogInfo {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  flex-shrink: 0;
+}
+
+.siteName {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--font-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.siteName:hover {
+  color: var(--theme-color);
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ============================================
+ * 中间：导航菜单区域
+ * ============================================ */
+.menus {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.menuList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+
+.menuItem {
+  position: relative;
+}
+
+.menuLink {
+  display: block;
+  padding: 20px 12px;
+  color: var(--font-color);
+  text-decoration: none;
+  font-size: 0.95em;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+/* 菜单项下划线动画 - 使用伪元素实现 */
+.menuLink::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--theme-color);
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+/* Hover 和 Active 状态 */
+.menuLink:hover,
+.menuLink.active {
+  color: var(--theme-color);
+}
+
+.menuLink:hover::after,
+.menuLink.active::after {
+  width: 80%;
+}
+
+/* 菜单图标间距 */
+.menuIcon {
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+/* ============================================
+ * 右侧：操作区域（社交图标 + 搜索 + 移动端按钮）
+ * ============================================ */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* 社交图标组 */
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 社交图标基础样式 */
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--font-color);
+  font-size: 1.2em;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+              color 0.3s ease,
+              background-color 0.3s ease;
+}
+
+/* 社交图标 hover 旋转动画 */
+.socialIcon:hover {
+  transform: rotate(360deg) scale(1.1);
+  color: #fff;
+  background-color: var(--hover-color, var(--theme-color));
+}
+
+/* 搜索按钮 */
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--font-color);
+  font-size: 1.1em;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  transition: color 0.3s ease,
+              background-color 0.3s ease,
+              transform 0.3s ease;
+}
+
+.searchButton:hover {
+  color: var(--theme-color);
+  background-color: rgba(73, 177, 245, 0.1);
+  transform: scale(1.05);
+}
+
+.searchButton:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
+/* 移动端汉堡菜单按钮 - 默认隐藏 */
+.toggleMenu {
+  display: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 1.5em;
+  color: var(--font-color);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition: color 0.3s ease,
+              background-color 0.3s ease,
+              transform 0.3s ease;
+}
+
+.toggleMenu:hover {
+  color: var(--theme-color);
+  background-color: rgba(73, 177, 245, 0.1);
+}
+
+.toggleMenu:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
+/* ============================================
+ * 响应式设计 - 平板及以下设备
+ * ============================================ */
+@media (max-width: 768px) {
+  /* 隐藏桌面导航菜单 */
+  .menus.hideMenu {
+    display: none;
+  }
+
+  /* 显示移动端菜单按钮 */
+  .toggleMenu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 调整内容区域布局 */
+  .navContent {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  /* 缩小网站标题字体 */
+  .siteName {
+    font-size: 1.25em;
+    max-width: 150px;
+  }
+
+  /* 隐藏社交图标（移动端可放入 Sidebar） */
+  .socialIcons {
+    display: none;
+  }
+}
+
+/* ============================================
+ * 响应式设计 - 小屏手机设备
+ * ============================================ */
+@media (max-width: 480px) {
+  .navContent {
+    padding: 0 12px;
+  }
+
+  .siteName {
+    font-size: 1.1em;
+    max-width: 120px;
+  }
+
+  .searchButton {
+    width: 32px;
+    height: 32px;
+    font-size: 1em;
+  }
+
+  .toggleMenu {
+    font-size: 1.3em;
+    padding: 8px;
+  }
+}
+
+/* ============================================
+ * 辅助功能优化 - 减少动画偏好
+ * ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: none;
+  }
+
+  .menuLink::after {
+    transition: none;
+  }
+
+  .socialIcon {
+    transition: color 0.2s ease;
+  }
+
+  .socialIcon:hover {
+    transform: none;
+  }
+
+  .searchButton:hover,
+  .toggleMenu:hover {
+    transform: none;
+  }
+}

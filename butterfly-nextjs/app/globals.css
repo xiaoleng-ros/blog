@@ -1,0 +1,592 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 主题色 */
+  --theme-color: #49B1F5;
+  --theme-paginator-color: #00c4b6;
+  --theme-text-selection: #00c4b6;
+  --theme-link-color: #49B1F5;
+  --theme-hr-color: #49B1F5;
+
+  /* 辅助色 */
+  --bright-blue: #49B1F5;
+  --strong-cyan: #00c4b6;
+  --light-orange: #FF7242;
+  --light-red: #F47466;
+
+  /* 文字颜色 */
+  --font-color: #1F2D3D;
+  --font-black: #4C4948;
+  --meta-theme-color: #858585;
+  --text-hover: #49B1F5;
+
+  /* 背景色 */
+  --card-bg: #FFFFFF;
+  --body-bg: #FFFFFF;
+  --sidebar-background: #f6f8fa;
+  --whitesmoke: #f5f5f5;
+
+  /* 按钮颜色 */
+  --btn-bg: #49B1F5;
+  --btn-color: #FFFFFF;
+  --btn-hover-color: #FF7242;
+
+  /* 全局设置 */
+  --global-font-size: 14px;
+  --text-line-height: 2;
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --code-font-family: consolas, Menlo, monospace, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* 布局尺寸 */
+  --sidebar-width: 330px;
+  --index-top-img-height: 100vh;
+  --index-site-info-top: 43%;
+}
+
+/* 暗色模式变量 */
+[data-theme="dark"] {
+  --font-color: #ced4da;
+  --font-black: #adb5bd;
+  --card-bg: #1a1a2e;
+  --body-bg: #0d1117;
+  --sidebar-background: #161b22;
+  --whitesmoke: #21262d;
+  --meta-theme-color: #8b949e;
+}
+
+/* 基于 normalize.min.css + Butterfly 定制 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--global-font-size);
+  color: var(--font-color);
+  line-height: var(--text-line-height);
+  background-color: var(--body-bg);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 通用动画类 */
+.cardHover {
+  transition: all 0.3s;
+}
+
+.cardHover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-effects {
+  transition: all 0.3s;
+}
+
+.btn-effects:hover {
+  transform: scale(1.03);
+}
+
+/* 选中文本颜色 */
+::selection {
+  background: var(--theme-text-selection);
+  color: #fff;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ========== Footer 页脚样式 ========== */
+#footer {
+  position: relative;
+  background: var(--card-bg);
+  padding: 40px 20px 20px;
+  margin-top: auto;
+}
+
+/* 顶部 mask 渐变遮罩装饰效果 */
+#footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--theme-color),
+    var(--strong-cyan),
+    var(--light-orange)
+  );
+}
+
+/* Footer 内容容器 - 三列网格布局 */
+.footer-content {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* 移动端响应式：单列垂直排列 */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+/* Footer 分组标题样式 */
+.footer-group h3 {
+  font-size: 1.1em;
+  margin-bottom: 15px;
+  color: var(--font-black);
+  position: relative;
+  padding-bottom: 10px;
+}
+
+/* 标题下划线装饰 */
+.footer-group h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--theme-color);
+}
+
+/* 移动端标题下划线居中 */
+@media (max-width: 768px) {
+  .footer-group h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* 导航链接列表样式 */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+/* 导航链接锚点样式 */
+.footer-links a {
+  color: var(--meta-theme-color);
+  text-decoration: none;
+  transition: color 0.3s;
+  font-size: 0.9em;
+}
+
+.footer-links a:hover {
+  color: var(--theme-color);
+}
+
+/* 版权信息文本样式 */
+.copyright-info {
+  color: var(--meta-theme-color);
+  font-size: 0.85em;
+  line-height: 1.8;
+}
+
+/* 框架/主题声明文本样式 */
+.framework-info {
+  color: var(--meta-theme-color);
+  font-size: 0.85em;
+  line-height: 1.8;
+}
+
+/* 框架链接样式 */
+.framework-info a {
+  color: var(--theme-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.framework-info a:hover {
+  text-decoration: underline;
+}
+
+/* 运行时间信息样式 */
+.runtime-info {
+  margin-top: 10px;
+  color: var(--meta-theme-color);
+  font-size: 0.85em;
+}
+
+/* ========== Rightside 右侧工具栏样式 ========== */
+#rightside {
+  position: fixed;
+  right: 40px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 工具栏按钮基础样式 */
+.rightside-item {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--font-color);
+  font-size: 1em;
+  transition: all 0.3s;
+  position: relative;
+}
+
+/* Hover 效果：放大 + 背景色变化 */
+.rightside-item:hover {
+  transform: scale(1.1);
+  background: var(--theme-color);
+  color: #fff;
+}
+
+/* 激活状态样式（用于阅读模式和侧边栏按钮） */
+.rightside-item.active {
+  background: var(--theme-color);
+  color: #fff;
+}
+
+/* Tooltip 提示框 - 使用 CSS attr() 函数读取 data-tooltip 属性 */
+.rightside-item::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 0.8em;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+/* Tooltip hover 显示效果 */
+.rightside-item:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 回到顶部按钮特殊样式 - 默认隐藏 */
+#to-top {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+/* 回到顶部按钮显示状态 */
+#to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 滚动百分比数字显示 */
+.scroll-percent {
+  position: absolute;
+  font-size: 0.65em;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--meta-theme-color);
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* 响应式调整：小屏幕时工具栏位置微调 */
+@media (max-width: 768px) {
+  #rightside {
+    right: 20px;
+    gap: 10px;
+  }
+
+  .rightside-item {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9em;
+  }
+
+  /* 移动端隐藏 tooltip（避免遮挡内容） */
+  .rightside-item::before {
+    display: none;
+  }
+}
+
+/* ========== 布局骨架样式 ========== */
+
+/* HTML/body 基础高度设置 */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 背景层 - 纯白色固定背景 */
+#web_bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -999;
+  background-color: #FFFFFF;
+}
+
+/* 主容器 */
+#body-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 内容区域 */
+#content-inner.layout {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  #content-inner.layout {
+    flex-direction: column;
+    padding: 20px 15px;
+  }
+}
+
+/* Aside 侧边栏区域 */
+#aside-content {
+  width: 26%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  #aside-content {
+    width: 100%;
+  }
+}
+
+/* 主内容区 */
+#content-inner.layout > .main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========== 移动端侧边栏样式 ========== */
+
+/* 侧边栏容器 - 从左侧滑入 */
+.sidebar-menus {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 300px;
+  height: 100vh;
+  background: var(--sidebar-background);
+  z-index: 105;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 遮罩层 */
+.menu-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 104;
+}
+
+/* 关闭按钮 */
+.sidebar-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--font-black);
+  z-index: 10;
+  transition: transform 0.3s;
+  padding: 6px;
+  line-height: 1;
+}
+
+.sidebar-close-btn:hover {
+  transform: rotate(90deg);
+  color: var(--theme-color);
+}
+
+/* 站点信息区域 */
+.sidebar-site-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+/* 头像容器 */
+.sidebar-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 3px solid var(--theme-color);
+  transition: transform 0.3s;
+}
+
+.sidebar-avatar:hover {
+  transform: scale(1.08);
+}
+
+.sidebar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 站点标题 */
+.sidebar-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--font-black);
+  margin-bottom: 6px;
+}
+
+/* 站点副标题 */
+.sidebar-subtitle {
+  font-size: 0.85em;
+  color: var(--meta-theme-color);
+  text-align: center;
+}
+
+/* 导航菜单区域 */
+.sidebar-nav {
+  margin-bottom: 20px;
+}
+
+/* 菜单列表 */
+.sidebar-menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 单个菜单项 */
+.sidebar-menu-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-menu-item a {
+  display: block;
+  padding: 14px 20px;
+  color: var(--font-color);
+  text-decoration: none;
+  font-size: 0.95em;
+  transition: all 0.25s;
+  position: relative;
+  padding-left: 28px;
+}
+
+.sidebar-menu-item a::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.sidebar-menu-item a:hover {
+  color: var(--theme-color);
+  background: rgba(73, 177, 245, 0.06);
+  padding-left: 32px;
+}
+
+.sidebar-menu-item a:hover::before {
+  opacity: 1;
+}
+
+/* 社交链接区域 */
+.sidebar-social {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* 社交链接图标 */
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--whitesmoke);
+  color: var(--meta-theme-color);
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.social-link:hover {
+  background: var(--theme-color);
+  color: #fff;
+  transform: translateY(-3px);
+}
