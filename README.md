@@ -26,7 +26,7 @@
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| **Next.js** | ^15.2.4 | React 全栈框架 (App Router) |
+| **Next.js** | 15.4.11 | React 全栈框架 (App Router) |
 | **Payload CMS** | ^3.83.0 | Headless CMS（内容管理） |
 | **PostgreSQL** | ^16.x | 关系型数据库 |
 | **NextAuth.js** | ^5.0.0-beta.25 | 用户认证系统 |

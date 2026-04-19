@@ -4,7 +4,7 @@
  * 支持：邮箱密码登录、GitHub OAuth（可选）
  */
 
-import type { NextAuthConfig } from 'next-auth'
+import type { DefaultSession, NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
 import payload from 'payload'
