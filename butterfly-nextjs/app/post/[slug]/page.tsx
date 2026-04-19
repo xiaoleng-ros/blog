@@ -2,7 +2,8 @@
 
 /**
  * 文章详情页
- * 展示完整文章内容、目录、版权信息、相关推荐等
+ * 功能：展示完整文章内容、目录、版权信息、相关推荐等
+ * 对接 Payload CMS 真实数据源
  */
 
 import React, { useState, useEffect } from 'react';
@@ -13,7 +14,11 @@ import PostContent from '@/components/post/PostContent';
 import PostCopyright from '@/components/post/PostCopyright';
 import PostNav from '@/components/post/PostNav';
 import PostToc from '@/components/post/PostToc';
-import { getPostBySlug, getAdjacentPosts } from '@/lib/utils';
+import {
+  getPostBySlug as getPostFromCMS,
+  getAdjacentPosts as getAdjacentFromCMS,
+} from '@/lib/actions'; // 使用 CMS 数据获取函数
+import type { Post } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCalendarAlt,
@@ -27,21 +32,38 @@ export default function PostDetail() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [post, setPost] = useState<any>(null);
+  // 使用正确的 TypeScript 类型（修复之前的 any 类型问题）
+  const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [prevPost, setPrevPost] = useState<any>(null);
-  const [nextPost, setNextPost] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [prevPost, setPrevPost] = useState<Post | null>(null);
+  const [nextPost, setNextPost] = useState<Post | null>(null);
 
-  // 加载文章数据
+  /**
+   * 从 CMS 加载文章详情数据
+   */
   useEffect(() => {
     if (!slug) return;
 
+    loadPostData(slug);
+  }, [slug]);
+
+  /**
+   * 加载文章数据和上下文导航
+   * @param postSlug 文章 slug
+   */
+  const loadPostData = async (postSlug: string) => {
     setLoading(true);
-    
-    // 模拟异步加载
-    setTimeout(() => {
-      const postData = getPostBySlug(slug);
+    setNotFound(false);
+    setError(null);
+
+    try {
+      // 并行加载文章详情和上下篇文章（优化性能）
+      const [postData, adjacentData] = await Promise.all([
+        getPostFromCMS(postSlug),
+        getAdjacentFromCMS(postSlug),
+      ]);
 
       if (!postData) {
         setNotFound(true);
@@ -50,18 +72,20 @@ export default function PostDetail() {
       }
 
       setPost(postData);
+      setPrevPost(adjacentData.prev);
+      setNextPost(adjacentData.next);
 
-      // 获取上下篇文章
-      const adjacent = getAdjacentPosts(slug);
-      setPrevPost(adjacent.prev);
-      setNextPost(adjacent.next);
-
+      // 更新页面标题（SEO 优化）
+      if (typeof document !== 'undefined') {
+        document.title = `${postData.title} - Butterfly Blog`;
+      }
+    } catch (err) {
+      console.error('❌ 加载文章失败:', err);
+      setError('文章加载失败，请稍后重试');
+    } finally {
       setLoading(false);
-      
-      // 更新页面标题
-      document.title = `${postData.title} - Butterfly Blog`;
-    }, 300);
-  }, [slug]);
+    }
+  };
 
   // 加载状态
   if (loading) {
@@ -75,6 +99,21 @@ export default function PostDetail() {
           <div className="skeleton-line content short"></div>
           <div className="skeleton-line content"></div>
         </div>
+      </div>
+    );
+  }
+
+  // 错误状态
+  if (error && !post) {
+    return (
+      <div className="post-error">
+        <div className="error-icon">⚠️</div>
+        <h2>加载失败</h2>
+        <p>{error}</p>
+        <button onClick={() => loadPostData(slug)} className="retry-btn">
+          重试
+        </button>
+        <Link href="/" className="back-home-btn">返回首页</Link>
       </div>
     );
   }
@@ -142,7 +181,7 @@ export default function PostDetail() {
                   <span className="meta-separator">|</span>
                   <span className="meta-item categories">
                     <FontAwesomeIcon icon={faFolderOpen} />
-                    {post.categories.map((cat: any, idx: number) => (
+                    {post.categories.map((cat, idx) => (
                       <React.Fragment key={cat.name}>
                         <Link href={cat.path}>{cat.name}</Link>
                         {idx < post.categories.length - 1 && <span>, </span>}
@@ -157,7 +196,7 @@ export default function PostDetail() {
                   <span className="meta-separator">|</span>
                   <span className="meta-item tags">
                     <FontAwesomeIcon icon={faTag} />
-                    {post.tags.map((tag: any, idx: number) => (
+                    {post.tags.map((tag, idx) => (
                       <React.Fragment key={tag.name}>
                         <Link href={tag.path}>#{tag.name}</Link>
                         {idx < post.tags.length - 1 && <span> </span>}
@@ -242,7 +281,7 @@ export default function PostDetail() {
 
         .skeleton-line {
           height: 20px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 25%);
           background-size: 200% 100%;
           border-radius: 4px;
           animation: shimmer 1.5s infinite;
@@ -266,6 +305,47 @@ export default function PostDetail() {
 
         .skeleton-line.content.short {
           width: 60%;
+        }
+
+        /* 错误状态 */
+        .post-error {
+          text-align: center;
+          padding: 80px 20px;
+        }
+
+        .error-icon {
+          font-size: 4em;
+          margin-bottom: 20px;
+        }
+
+        .post-error h2 {
+          font-size: 1.8em;
+          color: var(--font-color);
+          margin-bottom: 10px;
+        }
+
+        .post-error p {
+          color: var(--light-red, #F47466);
+          margin-bottom: 30px;
+        }
+
+        .retry-btn {
+          display: inline-block;
+          padding: 10px 28px;
+          background: var(--theme-color, #49B1F5);
+          color: #fff;
+          border: none;
+          border-radius: 25px;
+          text-decoration: none;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-right: 15px;
+        }
+
+        .retry-btn:hover {
+          opacity: 0.9;
+          transform: translateY(-2px);
         }
 
         /* 未找到 */

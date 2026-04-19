@@ -2,17 +2,44 @@
 
 /**
  * 分类总览页
- * 以卡片网格形式展示所有分类
+ * 功能：以卡片网格形式展示所有分类（从 Payload CMS 获取）
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { categories } from '@/lib/data';
+import { getAllCategories as getCategoriesFromCMS } from '@/lib/actions'; // 使用 CMS 数据
+import type { Category } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
 export default function CategoriesPage() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 从 CMS 加载分类数据
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  /**
+   * 加载分类列表
+   */
+  const loadCategories = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await getCategoriesFromCMS();
+      setCategories(data);
+    } catch (err) {
+      console.error('❌ 加载分类失败:', err);
+      setError('加载分类失败，请稍后重试');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="categories-page">
       {/* 页面标题 */}
@@ -21,52 +48,79 @@ export default function CategoriesPage() {
           <FontAwesomeIcon icon={faFolderOpen} className="title-icon" />
           文章分类
         </h1>
-        <p className="page-description">按分类浏览所有文章</p>
+        <p className="page-description">
+          {isLoading ? '加载中...' : `共 ${categories.length} 个分类`}
+        </p>
       </div>
 
-      {/* 分类网格 */}
-      <div className="category-grid">
-        {categories.map((cat, index) => {
-          // 为每个分类生成不同的渐变色
-          const gradients = [
-            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-            'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
-          ];
-          
-          return (
-            <Link
-              key={cat.name}
-              href={cat.path}
-              className="category-card"
-              style={{
-                '--card-gradient': gradients[index % gradients.length],
-                animationDelay: `${index * 80}ms`,
-              } as React.CSSProperties}
-            >
-              {/* 卡片背景装饰 */}
-              <div className="card-bg-decoration" />
+      {/* 错误状态 */}
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={loadCategories} className="retry-btn">重试</button>
+        </div>
+      )}
+
+      {/* 加载状态 */}
+      {isLoading && !error ? (
+        <div className="loading-grid">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="skeleton-card"></div>
+          ))}
+        </div>
+      ) : !error ? (
+        /* 分类网格 */
+        categories.length > 0 ? (
+          <div className="category-grid">
+            {categories.map((cat, index) => {
+              // 为每个分类生成不同的渐变色
+              const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+              ];
               
-              {/* 图标区域 */}
-              <div className="card-icon-wrapper">
-                <FontAwesomeIcon icon={faFolderOpen} className="card-icon" />
-              </div>
+              return (
+                <Link
+                  key={cat.name}
+                  href={cat.path}
+                  className="category-card"
+                  style={{
+                    '--card-gradient': gradients[index % gradients.length],
+                    animationDelay: `${index * 80}ms`,
+                  } as React.CSSProperties}
+                >
+                  {/* 卡片背景装饰 */}
+                  <div className="card-bg-decoration" />
+                  
+                  {/* 图标区域 */}
+                  <div className="card-icon-wrapper">
+                    <FontAwesomeIcon icon={faFolderOpen} className="card-icon" />
+                  </div>
 
-              {/* 信息区域 */}
-              <div className="card-info">
-                <h3 className="card-name">{cat.name}</h3>
-                <p className="card-count">{cat.count || 0} 篇文章</p>
-              </div>
+                  {/* 信息区域 */}
+                  <div className="card-info">
+                    <h3 className="card-name">{cat.name}</h3>
+                    <p className="card-count">{cat.count || 0} 篇文章</p>
+                  </div>
 
-              {/* 箭头指示 */}
-              <span className="card-arrow">→</span>
-            </Link>
-          );
-        })}
-      </div>
+                  {/* 箭头指示 */}
+                  <span className="card-arrow">→</span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          /* 空状态 */
+          <div className="empty-state">
+            <p>暂无分类</p>
+            <span>快去后台创建第一个分类吧！📂</span>
+          </div>
+        )
+      ) : null}
 
       <style jsx global>{`
         /* 分类页样式 */
@@ -100,6 +154,57 @@ export default function CategoriesPage() {
         .page-description {
           font-size: 1.05em;
           color: var(--meta-theme-color);
+        }
+
+        /* 错误提示 */
+        .error-message {
+          text-align: center;
+          padding: 40px;
+          color: var(--light-red, #F47466);
+        }
+
+        .retry-btn {
+          margin-top: 15px;
+          padding: 8px 24px;
+          background: var(--theme-color, #49B1F5);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+
+        /* 骨架屏 */
+        .loading-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 24px;
+        }
+
+        .skeleton-card {
+          height: 120px;
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 25%);
+          background-size: 200% 100%;
+          border-radius: 16px;
+          animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+
+        /* 空状态 */
+        .empty-state {
+          text-align: center;
+          padding: 60px 20px;
+          color: var(--meta-theme-color, #999);
+        }
+
+        .empty-state p {
+          font-size: 1.3em;
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: var(--font-color, #333);
         }
 
         /* 分类网格 */

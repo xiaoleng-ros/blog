@@ -2,42 +2,56 @@
 
 /**
  * 首页 - Butterfly 主题
- * 展示文章列表、Banner 区域、分页功能
+ * 功能：展示文章列表、分页功能，对接 Payload CMS 真实数据
  */
 
 import React, { useState, useEffect } from 'react';
 import PostCard from '@/components/post/PostCard';
 import Pagination from '@/components/ui/Pagination';
-import { getPosts } from '@/lib/utils';
+import { getPosts as getPostsFromCMS } from '@/lib/actions'; // 使用 CMS 数据获取函数
 import type { Post } from '@/lib/types';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsData, setPostsData] = useState<{ posts: Post[]; total: number; totalPages: number }>({ posts: [], total: 0, totalPages: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 加载文章数据
+  // 加载文章数据（从 CMS 获取）
   useEffect(() => {
     loadData(currentPage);
   }, [currentPage]);
 
-  // 加载数据函数
-  const loadData = (page: number) => {
+  /**
+   * 从 CMS 加载文章列表数据
+   * @param page 页码
+   */
+  const loadData = async (page: number) => {
     setIsLoading(true);
-    // 模拟异步加载
-    setTimeout(() => {
-      const data = getPosts({
+    setError(null);
+
+    try {
+      // 调用 Server Action 获取真实数据
+      const data = await getPostsFromCMS({
         page,
         pageSize: 6, // 每页显示 6 篇
-        sortBy: 'date',
+        sortBy: 'createdAt',
         sortOrder: 'desc',
       });
+
       setPostsData(data);
+    } catch (err) {
+      console.error('❌ 加载文章失败:', err);
+      setError('加载文章失败，请稍后重试');
+    } finally {
       setIsLoading(false);
-    }, 300);
+    }
   };
 
-  // 处理分页切换
+  /**
+   * 处理分页切换
+   * @param page 目标页码
+   */
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -50,8 +64,18 @@ export default function Home() {
         <div className="main-content">
           <div id="recent-posts" className="recent-posts nc">
             <div className="recent-post-items">
+              {/* 错误状态 */}
+              {error && (
+                <div className="error-message">
+                  <p>{error}</p>
+                  <button onClick={() => loadData(currentPage)} className="retry-btn">
+                    重试
+                  </button>
+                </div>
+              )}
+
               {/* 加载状态 */}
-              {isLoading ? (
+              {isLoading && !error ? (
                 Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="skeleton-card">
                     <div className="skeleton-cover"></div>
@@ -62,21 +86,29 @@ export default function Home() {
                     </div>
                   </div>
                 ))
-              ) : (
+              ) : !error ? (
                 /* 文章卡片列表 */
-                postsData.posts.map((post, index) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    index={index}
-                    layout={3} // 左右交替布局
-                  />
-                ))
-              )}
+                postsData.posts.length > 0 ? (
+                  postsData.posts.map((post, index) => (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      index={index}
+                      layout={3} // 左右交替布局
+                    />
+                  ))
+                ) : (
+                  /* 空状态 */
+                  <div className="empty-state">
+                    <p>暂无文章</p>
+                    <span>快去后台发布第一篇文章吧！📝</span>
+                  </div>
+                )
+              ) : null}
             </div>
 
             {/* 分页组件 */}
-            {!isLoading && (
+            {!isLoading && !error && postsData.totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={postsData.totalPages}
@@ -121,6 +153,52 @@ export default function Home() {
           flex-direction: column;
         }
 
+        /* 错误提示 */
+        .error-message {
+          text-align: center;
+          padding: 40px 20px;
+          color: var(--light-red, #F47466);
+        }
+
+        .error-message p {
+          font-size: 1.1em;
+          margin-bottom: 15px;
+        }
+
+        .retry-btn {
+          padding: 8px 24px;
+          background: var(--theme-color, #49B1F5);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 0.95em;
+          transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+          opacity: 0.9;
+          transform: translateY(-1px);
+        }
+
+        /* 空状态 */
+        .empty-state {
+          text-align: center;
+          padding: 60px 20px;
+          color: var(--meta-theme-color, #999);
+        }
+
+        .empty-state p {
+          font-size: 1.3em;
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: var(--font-color, #333);
+        }
+
+        .empty-state span {
+          font-size: 0.95em;
+        }
+
         /* 骨架屏 */
         .skeleton-card {
           display: flex;
@@ -138,7 +216,7 @@ export default function Home() {
             90deg,
             #f0f0f0 25%,
             #e0e0e0 50%,
-            #f0f0f0 75%
+            #f0f0f0 25%
           );
           background-size: 200% 100%;
           border-radius: 12px;
@@ -159,7 +237,7 @@ export default function Home() {
             90deg,
             #f0f0f0 25%,
             #e0e0e0 50%,
-            #f0f0f0 75%
+            #f0f0f0 25%
           );
           background-size: 200% 100%;
           border-radius: 6px;
@@ -173,7 +251,7 @@ export default function Home() {
             90deg,
             #f0f0f0 25%,
             #e0e0e0 50%,
-            #f0f0f0 75%
+            #f0f0f0 25%
           );
           background-size: 200% 100%;
           border-radius: 4px;
@@ -187,7 +265,7 @@ export default function Home() {
             90deg,
             #f0f0f0 25%,
             #e0e0e0 50%,
-            #f0f0f0 75%
+            #f0f0f0 25%
           );
           background-size: 200% 100%;
           border-radius: 4px;

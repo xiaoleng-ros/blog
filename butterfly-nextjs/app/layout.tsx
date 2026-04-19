@@ -1,3 +1,12 @@
+/**
+ * 前台根布局
+ * 功能：为博客前台页面提供统一的 HTML 结构、导航栏、侧边栏等
+ * 
+ * 重要说明：
+ * - 此布局仅用于前台页面（首页、文章页等）
+ * - Payload Admin 后台使用独立的 (payload)/layout.tsx，避免 <html> 标签冲突
+ */
+
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
