@@ -15,9 +15,9 @@ import PostCopyright from '@/components/post/PostCopyright';
 import PostNav from '@/components/post/PostNav';
 import PostToc from '@/components/post/PostToc';
 import {
-  getPostBySlug as getPostFromCMS,
-  getAdjacentPosts as getAdjacentFromCMS,
-} from '@/lib/actions'; // 使用 CMS 数据获取函数
+  getPostBySlug,
+  getAdjacentPosts,
+} from '@/lib/actions';
 import type { Post } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -61,8 +61,8 @@ export default function PostDetail() {
     try {
       // 并行加载文章详情和上下篇文章（优化性能）
       const [postData, adjacentData] = await Promise.all([
-        getPostFromCMS(postSlug),
-        getAdjacentFromCMS(postSlug),
+        getPostBySlug(postSlug),
+        getAdjacentPosts(postSlug),
       ]);
 
       if (!postData) {
@@ -541,7 +541,7 @@ export default function PostDetail() {
           }
 
           .post-aside {
-            display: none; // 移动端隐藏 TOC
+            display: none; /* 移动端隐藏 TOC */
           }
 
           .post-bg {

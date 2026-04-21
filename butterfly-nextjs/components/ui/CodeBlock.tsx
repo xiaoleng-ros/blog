@@ -497,7 +497,7 @@ export default function CodeBlock({ language, code }: CodeBlockProps) {
           }
 
           .language-label {
-            display: none; // 移动端隐藏语言标签节省空间
+            display: none; /* 移动端隐藏语言标签节省空间 */
           }
 
           .toolbar-button {

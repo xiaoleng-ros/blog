@@ -59,10 +59,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      {/* 文章列表区域 */}
-      <main id="content-inner" className="layout">
-        <div className="main-content">
-          <div id="recent-posts" className="recent-posts nc">
+      <div id="recent-posts" className="recent-posts nc">
             <div className="recent-post-items">
               {/* 错误状态 */}
               {error && (
@@ -115,30 +112,13 @@ export default function Home() {
                 onPageChange={handlePageChange}
               />
             )}
-          </div>
-        </div>
-      </main>
+      </div>
 
       <style jsx global>{`
         /* 首页样式 */
         .home-page {
           min-height: 100vh;
           padding-top: 80px;
-        }
-
-        /* 内容区域 */
-        #content-inner.layout {
-          max-width: 1300px;
-          margin: 0 auto 40px;
-          padding: 0 20px;
-          position: relative;
-          z-index: 20;
-        }
-
-        .main-content {
-          background: transparent;
-          border-radius: 16px;
-          overflow: hidden;
         }
 
         .recent-posts.nc {
@@ -283,10 +263,6 @@ export default function Home() {
 
         /* 响应式 */
         @media (max-width: 900px) {
-          #content-inner.layout {
-            margin-top: 0;
-          }
-
           .recent-posts.nc {
             padding: 16px;
           }

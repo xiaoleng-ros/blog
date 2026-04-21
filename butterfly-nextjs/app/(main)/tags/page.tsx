@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getAllTags as getTagsFromCMS } from '@/lib/actions'; // 使用 CMS 数据
+import { getTags } from '@/lib/actions';
 import type { Tag } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTags } from '@fortawesome/free-solid-svg-icons';
@@ -50,7 +50,7 @@ export default function TagsPage() {
     setError(null);
 
     try {
-      const data = await getTagsFromCMS();
+      const data = await getTags();
       setTags(data);
     } catch (err) {
       console.error('❌ 加载标签失败:', err);

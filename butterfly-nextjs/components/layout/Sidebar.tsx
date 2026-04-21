@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useSidebar } from '@/components/contexts/SidebarContext'
 
 const navItems = [
   { label: '首页', href: '/' },
@@ -20,9 +20,7 @@ const socialLinks = [
   { icon: 'fa-envelope', href: 'mailto:test@example.com', label: '邮箱' },
 ]
 
-export default function Sidebar() {
-  const { isOpen, closeSidebar } = useSidebar()
-
+export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -45,7 +43,7 @@ export default function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={closeSidebar}
+            onClick={onClose}
           />
           <motion.aside
             id="sidebar-menus"
@@ -60,7 +58,7 @@ export default function Sidebar() {
               duration: 0.5,
             }}
           >
-            <button className="sidebar-close-btn" onClick={closeSidebar} aria-label="关闭侧边栏">
+            <button className="sidebar-close-btn" onClick={onClose} aria-label="关闭侧边栏">
               <FontAwesomeIcon icon={faXmark} />
             </button>
 
@@ -76,9 +74,9 @@ export default function Sidebar() {
               <ul className="sidebar-menu-list">
                 {navItems.map((item) => (
                   <li key={item.href} className="sidebar-menu-item">
-                    <a href={item.href} onClick={closeSidebar}>
+                    <Link href={item.href} onClick={onClose}>
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

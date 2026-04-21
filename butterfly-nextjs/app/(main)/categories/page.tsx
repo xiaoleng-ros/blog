@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getAllCategories as getCategoriesFromCMS } from '@/lib/actions'; // 使用 CMS 数据
+import { getCategories } from '@/lib/actions';
 import type { Category } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
@@ -30,7 +30,7 @@ export default function CategoriesPage() {
     setError(null);
 
     try {
-      const data = await getCategoriesFromCMS();
+      const data = await getCategories();
       setCategories(data);
     } catch (err) {
       console.error('❌ 加载分类失败:', err);

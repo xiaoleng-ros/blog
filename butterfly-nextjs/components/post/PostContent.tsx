@@ -50,31 +50,34 @@ export default function PostContent({ content }: PostContentProps) {
           // 自定义代码块渲染
           pre({ node, children, ...props }) {
             // 检查是否是代码块
-            const isCodeBlock = node?.children?.[0]?.tagName === 'code';
-            
+            const isCodeBlock = (node?.children?.[0] as any)?.tagName === 'code';
+
             if (!isCodeBlock) {
               return <pre {...props}>{children}</pre>;
             }
-            
+
             // 提取语言和代码内容
-            const codeElement = node.children[0];
-            const className = codeElement.properties.className || '';
-            const language = className.replace('language-', '') || 'text';
-            const codeString = codeElement.children[0]?.value || '';
-            
+            const codeElement = node!.children[0] as any;
+            const className = codeElement.properties?.className || '';
+            // React Markdown v9 中 className 是数组，如 ['language-js']
+            const language = Array.isArray(className)
+              ? className[0]?.replace('language-', '') || 'text'
+              : (className as string).replace('language-', '') || 'text';
+            const codeString = codeElement.children?.[0]?.value || '';
+
             return <CodeBlock language={language} code={codeString} />;
           },
           
           // 行内代码
-          code({ node, inline, className, children, ...props }) {
-            if (inline) {
+          code({ className, children, ...props }) {
+            const isInline = !className;
+            if (isInline) {
               return (
                 <code className="inline-code" {...props}>
                   {children}
                 </code>
               );
             }
-            // 非行内代码由 pre 处理
             return <>{children}</>;
           },
 

@@ -87,7 +87,7 @@ export default function CardCategories({
 
       {/* 显示更多提示 */}
       {limit > 0 && allCategories.length > limit && (
-        <div class="more-hint">
+        <div className="more-hint">
           还有 {allCategories.length - limit} 个分类...
         </div>
       )}

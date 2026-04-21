@@ -109,7 +109,7 @@ export default function CardArchives({
       </ul>
 
       {limit > 0 && allMonths.length > limit && (
-        <div class="more-hint">更多归档...</div>
+        <div className="more-hint">更多归档...</div>
       )}
 
       <style jsx>{`
@@ -221,18 +221,18 @@ export default function CardArchives({
           position: relative;
           padding-left: 16px;
           margin-bottom: 6px;
+        }
 
-          &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 11px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--theme-color);
-            opacity: 0.5;
-          }
+        .archive-posts li::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 11px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--theme-color);
+          opacity: 0.5;
         }
 
         .archive-post-link {

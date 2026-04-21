@@ -49,7 +49,7 @@ export default function PostCard({ post, index = 0, layout = 3 }: PostCardProps)
         <div className={`post_cover ${coverPosition}`}>
           <div onClick={handlePostClick} title={post.title} style={{ cursor: 'pointer' }}>
             <Image
-              src={post.cover}
+              src={post.cover!}
               alt={post.title}
               fill
               sizes="(max-width: 768px) 100vw, 45vw"
@@ -133,7 +133,7 @@ export default function PostCard({ post, index = 0, layout = 3 }: PostCardProps)
 
         {/* 摘要内容 */}
         {excerpt && (
-          <div className="content" dangerouslySetInnerHTML={{ __html: excerpt }} />
+          <div className="content">{excerpt}</div>
         )}
       </div>
 

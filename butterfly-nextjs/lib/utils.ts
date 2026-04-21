@@ -4,7 +4,7 @@
  */
 
 import { Post, Category, Tag, ArchiveGroup } from './types';
-import posts from './data';
+import posts, { categories, tags } from './data';
 
 /**
  * 获取所有文章（支持分页、排序、筛选）

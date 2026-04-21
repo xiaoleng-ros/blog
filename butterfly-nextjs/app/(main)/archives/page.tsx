@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getArchiveData as getArchiveFromCMS } from '@/lib/actions'; // 使用 CMS 数据
+import { getArchiveData } from '@/lib/actions';
 import type { ArchiveGroup } from '@/lib/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -35,7 +35,7 @@ export default function ArchivesPage() {
     setError(null);
 
     try {
-      const data = await getArchiveFromCMS();
+      const data = await getArchiveData();
       setArchiveData(data);
 
       // 默认展开所有年份

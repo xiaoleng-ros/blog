@@ -14,6 +14,7 @@ import {
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSidebar } from '@/components/contexts/SidebarContext';
+import SearchModal from '@/components/ui/SearchModal';
 import styles from './Header.module.css';
 
 /**
@@ -91,6 +92,8 @@ export default function Header({
   
   /** 控制移动端菜单是否展开 */
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   /**
    * 滚动事件处理函数
@@ -214,9 +217,7 @@ export default function Header({
           <button
             className={styles.searchButton}
             aria-label="搜索"
-            onClick={() => {
-              console.log('搜索功能待实现');
-            }}
+            onClick={() => setIsSearchOpen(true)}
           >
             <FontAwesomeIcon icon={faSearch} />
           </button>
@@ -232,6 +233,7 @@ export default function Header({
           </button>
         </div>
       </div>
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </motion.header>
   );
 }
